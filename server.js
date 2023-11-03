@@ -16,8 +16,18 @@ const schema = buildSchema(`
         name: String
         userId: Int!
     } 
+
+    type Test {
+      argument: String
+    }
+
+    type Mutation {
+      updateUser( username: String, password: String, userId: Int!): User
+      createUser(username: String, password: String): User
+    }
+
     type Query {
-        functionName(firtsName: String): User
+        test(argumnet: String): Test
         getUser(userId: Int!): User
         getClient(id: Int!): Client
     }
@@ -38,8 +48,33 @@ const clients = [
 ];
 
 const resolvers = {
-  getUser: ({ userId }) => users.find((user) => user.id === userId),
-  getClient: ({ id }) => clients.find((client) => client.id === id),
+  test: (args, ctx) => {
+    console.log(args, "my args");
+  },
+  getUser: ({ userId }) => {
+    return users.find((user) => user.id === userId);
+  },
+  getClient: ({ id }) => {
+    return clients.find((client) => client.id === id);
+  },
+  createUser: ({ password, username }) => {
+    users.push({ password: password, username: username, id: 4 });
+    return users.find((user) => user.id === 4);
+  },
+  updateUser: ({ password, username, userId }) => {
+    const foundUser = users.find((user) => user.id == +userId);
+    const userIndx = users.indexOf(foundUser);
+    if (userIndx === -1) {
+      return "Incorrect format.";
+    }
+    const updatedUser = (users[userIndx] = {
+      ...users[userIndx],
+      password: password,
+      username: username,
+    });
+
+    return updatedUser;
+  },
 };
 
 const app = express();
