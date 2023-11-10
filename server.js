@@ -42,9 +42,9 @@ const users = [
 ];
 
 const clients = [
-  { id: 1, name: "client#1" },
-  { id: 2, name: "client#2" },
-  { id: 3, name: "client#3" },
+  { id: 1, name: "client#1", userId: 2 },
+  { id: 2, name: "client#2", userId: 1 },
+  { id: 3, name: "client#3", userId: 3 },
 ];
 
 const resolvers = {
@@ -62,6 +62,7 @@ const resolvers = {
     return users.find((user) => user.id === 4);
   },
   updateUser: ({ password, username, userId }) => {
+    console.log(password, "Checking user input");
     const foundUser = users.find((user) => user.id == +userId);
     const userIndx = users.indexOf(foundUser);
     if (userIndx === -1) {
